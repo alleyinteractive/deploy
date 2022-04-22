@@ -2,14 +2,23 @@
 #
 # Deploy a branch from Alley to an upstream VIP mirror
 #
-# See https://github.com/alleyinteractive/deploy
+# Reference:
+# https://github.com/alleyinteractive/deploy
+# https://infosphere.alley.co/production/standards/deployment.html
+
+
+# Default VIP_REPO_DIR to /tmp if unset
+VIP_REPO_DIR="${VIP_REPO_DIR:-'/tmp'}"
+
+# Default ALLEY_REPO_DIR to script invocation directory if unset
+ALLEY_REPO_DIR="${ALLEY_REPO_DIR:-$( pwd )}"
 
 # Sanity test for mandatory variables
 for var in \
+    'ALLEY_REPO_DIR'\
     'VIP_BRANCH_NAME' \
     'VIP_GIT_REPO' \
     'VIP_REPO_DIR' \
-    'ALLEY_REPO_DIR'\
 ; do
     if [ -n "${!var}" ]; then
         echo "$var: ${!var}"
