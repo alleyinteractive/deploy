@@ -72,7 +72,7 @@ git config user.email "ops+buddy@alley.co"
 git config user.name "Alley Operations"
 git config push.default simple
 
-# Add changes to VIP repo
+# Commit changes to VIP repo
 git add -A
 git status
 git commit \
@@ -81,6 +81,7 @@ git commit \
     --author="${COMMIT_AUTHOR}" \
     --file=/tmp/commit.message
 
+# Push changes to VIP repo
 echo "Pushing to VIP ${VIP_BRANCH_NAME}"
 git push -u origin
 
