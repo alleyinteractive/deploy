@@ -13,7 +13,7 @@ VIP_REPO_DIR="${VIP_REPO_DIR:-'/tmp'}"
 # Default ALLEY_REPO_DIR to script invocation directory if unset
 ALLEY_REPO_DIR="${ALLEY_REPO_DIR:-$( pwd )}"
 
-# Sanity test for mandatory variables
+# Test for required variables
 for var in \
     'ALLEY_REPO_DIR'\
     'VIP_BRANCH_NAME' \
@@ -28,7 +28,6 @@ for var in \
     fi
 done
 
-# Git/SSH Configuration
 # Disable host key checking on github.com
 echo "
 Host github.com
@@ -37,12 +36,10 @@ Host github.com
 
 # Store the last commit author 
 COMMIT_AUTHOR=$(git log -n1 --pretty=format:"%an <%ae>")
-git config --global user.email "ops+buddy@alley.co"
-git config --global user.name "Alley Operations"
-git config --global push.default simple
 
 cd ${ALLEY_REPO_DIR}
 
+# Clone VIP_GIT_REPO to VIP_REPO_DIR
 echo "Cloning ${VIP_GIT_REPO} to ${VIP_REPO_DIR}"
 git clone \
     --recursive \
@@ -51,6 +48,7 @@ git clone \
     -b $VIP_BRANCH_NAME \
     git@github.com:wpcomvip/${VIP_GIT_REPO}.git ${VIP_REPO_DIR}
 
+# Copy (rsync) alley repo over vip repo, excluding some paths
 rsync -aq \
 	--exclude .git \
 	--exclude .gitmodules \
@@ -69,7 +67,12 @@ COMMIT_EOF
 
 cd ${VIP_REPO_DIR}
 
-# Adding changes to VIP repo
+# Set git config variables
+git config user.email "ops+buddy@alley.co"
+git config user.name "Alley Operations"
+git config push.default simple
+
+# Add changes to VIP repo
 git add -A
 git status
 git commit \
