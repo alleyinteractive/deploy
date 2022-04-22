@@ -1,2 +1,2 @@
-# deploy-vip
-A standard set of scripts to aid automated deployments to VIP
+# deploy
+A standard set of scripts to aid automated deployments. See [the infosphere](https://infosphere.alley.co/production/standards/deployment.html).
