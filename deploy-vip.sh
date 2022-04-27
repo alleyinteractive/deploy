@@ -146,7 +146,7 @@ COMMIT_EOF
 cd ${VIP_REPO_DIR}
 
 # Set git config variables
-git config user.email "ops+buddy@alley.co"
+git config user.email "9137529+alley-ci@users.noreply.github.com"
 git config user.name "Alley Operations"
 git config push.default simple
 
