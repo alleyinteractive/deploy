@@ -17,9 +17,9 @@
 # https://infosphere.alley.co/production/standards/deployment.html
 
 # Set git config variables
-git config user.email "9137529+alley-ci@users.noreply.github.com"
-git config user.name "Alley CI"
-git config push.default simple
+git config --global user.email "9137529+alley-ci@users.noreply.github.com"
+git config --global user.name "Alley CI"
+git config --global push.default simple
 
 # Check for the presence of a pull request flag (pr) and proceed accordingly
 PR=false
