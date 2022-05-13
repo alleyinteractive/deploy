@@ -83,6 +83,11 @@ for var in \
     fi
 done
 
+# Ensure path directories have trailing slashes
+ALLEY_REPO_DIR="${ALLEY_REPO_DIR%/}/"
+VIP_REPO_DIR="${VIP_REPO_DIR%/}/"
+
+
 # Disable host key checking on github.com
 echo "
 Host github.com
