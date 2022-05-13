@@ -110,7 +110,7 @@ git clone \
 
 # If we should deploy from scratch
 if [[ \
-    ! $PR || \
+    "$PR" != true || \
     $BUDDY_EXECUTION_REFRESH == "true" || \
     $BUDDY_EXECUTION_CLEAR_CACHE == "true" || \
     $SUBMODULE_CHANGES != "0" \
