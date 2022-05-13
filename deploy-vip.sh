@@ -5,7 +5,7 @@
 # Usage:
 #   deploy-vip.sh [<pr>]
 #
-# Options: 
+# Options:
 #   pr        Instead of pushing directly to the branch, create a PR.
 #
 # Examples:
@@ -26,7 +26,7 @@ PR=false
 if [[ "$1" == "pr" || "$1" == "-pr" ]]; then
 	PR=true
     VIP_PR_BRANCH="merge/"
-    
+
     # Append Jira ticket in merge branch name if present
     JIRA_TICKET="$( echo $BUDDY_EXECUTION_REVISION_MESSAGE | grep -oE -m 1 "[A-Za-z]+-[0-9]+" | head -1 | tr ' ' '-' | xargs echo -n )"
 
@@ -94,7 +94,7 @@ Host github.com
 	StrictHostKeyChecking no
 " >> ~/.ssh/config
 
-# Store the last commit author 
+# Store the last commit author
 COMMIT_AUTHOR=$(git log -n1 --pretty=format:"%an <%ae>")
 
 cd ${ALLEY_REPO_DIR}
