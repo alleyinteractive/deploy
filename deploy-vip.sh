@@ -16,6 +16,10 @@
 # https://github.com/alleyinteractive/deploy
 # https://infosphere.alley.co/production/standards/deployment.html
 
+# Set git config variables
+git config user.email "9137529+alley-ci@users.noreply.github.com"
+git config user.name "Alley CI"
+git config push.default simple
 
 # Check for the presence of a pull request flag (pr) and proceed accordingly
 PR=false
@@ -144,11 +148,6 @@ $BUDDY_EXECUTION_REVISION_MESSAGE
 COMMIT_EOF
 
 cd ${VIP_REPO_DIR}
-
-# Set git config variables
-git config user.email "9137529+alley-ci@users.noreply.github.com"
-git config user.name "Alley Operations"
-git config push.default simple
 
 # Commit changes to VIP repo
 git add -A
