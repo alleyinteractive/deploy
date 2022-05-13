@@ -5,7 +5,7 @@
 # Usage:
 #   deploy-vip.sh [<pr>]
 #
-# Options: 
+# Options:
 #   pr        Instead of pushing directly to the branch, create a PR.
 #
 # Examples:
@@ -16,13 +16,17 @@
 # https://github.com/alleyinteractive/deploy
 # https://infosphere.alley.co/production/standards/deployment.html
 
+# Set git config variables
+git config --global user.email "9137529+alley-ci@users.noreply.github.com"
+git config --global user.name "Alley CI"
+git config --global push.default simple
 
 # Check for the presence of a pull request flag (pr) and proceed accordingly
 PR=false
 if [[ "$1" == "pr" || "$1" == "-pr" ]]; then
 	PR=true
     VIP_PR_BRANCH="merge/"
-    
+
     # Append Jira ticket in merge branch name if present
     JIRA_TICKET="$( echo $BUDDY_EXECUTION_REVISION_MESSAGE | grep -oE -m 1 "[A-Za-z]+-[0-9]+" | head -1 | tr ' ' '-' | xargs echo -n )"
 
@@ -79,13 +83,18 @@ for var in \
     fi
 done
 
+# Ensure path directories have trailing slashes
+ALLEY_REPO_DIR="${ALLEY_REPO_DIR%/}/"
+VIP_REPO_DIR="${VIP_REPO_DIR%/}/"
+
+
 # Disable host key checking on github.com
 echo "
 Host github.com
 	StrictHostKeyChecking no
 " >> ~/.ssh/config
 
-# Store the last commit author 
+# Store the last commit author
 COMMIT_AUTHOR=$(git log -n1 --pretty=format:"%an <%ae>")
 
 cd ${ALLEY_REPO_DIR}
@@ -101,7 +110,7 @@ git clone \
 
 # If we should deploy from scratch
 if [[ \
-    ! $PR || \
+    "$PR" != true || \
     $BUDDY_EXECUTION_REFRESH == "true" || \
     $BUDDY_EXECUTION_CLEAR_CACHE == "true" || \
     $SUBMODULE_CHANGES != "0" \
@@ -144,11 +153,6 @@ $BUDDY_EXECUTION_REVISION_MESSAGE
 COMMIT_EOF
 
 cd ${VIP_REPO_DIR}
-
-# Set git config variables
-git config user.email "9137529+alley-ci@users.noreply.github.com"
-git config user.name "Alley Operations"
-git config push.default simple
 
 # Commit changes to VIP repo
 git add -A
