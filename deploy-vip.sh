@@ -27,16 +27,14 @@ if [[ "$1" == "pr" || "$1" == "-pr" ]]; then
 	PR=true
     VIP_PR_BRANCH="merge/"
 
-    # Append Jira ticket in merge branch name if present
-    JIRA_TICKET="$( echo $BUDDY_EXECUTION_REVISION_MESSAGE | grep -oE -m 1 "[A-Za-z]+-[0-9]+" | head -1 | tr ' ' '-' | xargs echo -n )"
-
-    if [ -n $JIRA_TICKET ]; then
-        VIP_PR_BRANCH+="${JIRA_TICKET}/"
-    fi
+    # TODO Append Jira ticket in merge branch name if present. The logic below was creating broken branch names and is worth further testing.
+    # JIRA_TICKET="$( echo $BUDDY_EXECUTION_REVISION_MESSAGE | grep -oE -m 1 "[A-Za-z]+-[0-9]+" | head -1 | tr ' ' '-' | xargs echo -n )"
+    # if [ -n $JIRA_TICKET ]; then
+        # VIP_PR_BRANCH+="${JIRA_TICKET}/"
+    # fi
 
     # Append the (short) SHA and unix timestamp to ensure uniqueness
-    VIP_PR_BRANCH+="/${BUDDY_EXECUTION_REVISION_SHORT}/$( date +%s )"
-
+    VIP_PR_BRANCH+="${BUDDY_EXECUTION_REVISION_SHORT}/$( date +%s )"
 fi
 
 # Check for changes to submodules as they require a full (rsync) deployment.
@@ -116,7 +114,13 @@ if [[ \
     $SUBMODULE_CHANGES != "0" \
 ]]; then
     deploy_from_scratch
-else # Attempt to create an atomic patch for the PR
+else # Attempt to create an atomic patch for the PR.
+
+	# The `gh` command is needed for PR creation, so check if it's available and bail with a helpful message if not.
+	if [ ! command -v gh >/dev/null 2>&1 ]; then
+      echo "Error: gh is not installed or found in PATH. It is required to create PRs. Exiting."
+      exit 1
+    fi
 
     cd ${ALLEY_REPO_DIR}
         if \
@@ -154,6 +158,11 @@ COMMIT_EOF
 
 cd ${VIP_REPO_DIR}
 
+# Create the new branch locally if we are pushing a PR.
+if [[ "$PR" == true ]]; then
+	git checkout -b "${VIP_PR_BRANCH}"
+fi
+
 # Commit changes to VIP repo
 git add -A
 git status
@@ -164,7 +173,14 @@ git commit \
     --file=/tmp/commit.message
 
 # Push changes to VIP repo
-echo "Pushing to VIP ${VIP_BRANCH_NAME}"
-git push -u origin
+if [[ "$PR" != true ]]; then
+    echo "Pushing to VIP ${VIP_BRANCH_NAME}"
+    git push -u origin
+else
+	echo "Pushing branch ${VIP_PR_BRANCH} to VIP and creating PR"
+	# Create remote branch on VIP as ${VIP_PR_BRANCH}.
+	git push -u origin ${VIP_PR_BRANCH}
+	gh pr create -f -B ${VIP_BRANCH_NAME} -H ${VIP_PR_BRANCH}
+fi
 
 echo "Done"
