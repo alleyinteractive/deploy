@@ -52,8 +52,6 @@ check_env_vars() {
 check_env_vars
 
 # Install WordPress to WP_CORE_DIR
-# We might be able to use mantle's version if they implement a way to install_test_suite
-# eg. https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh
 curl -s https://raw.githubusercontent.com/wp-cli/sample-plugin/master/bin/install-wp-tests.sh | bash -s "$DB_NAME" "$DB_USER" "$DB_PASS" "$DB_HOST" "$WP_VERSION" "$SKIP_DB_CREATE"
 green "WordPress installed to ${WP_CORE_DIR} with test suite at ${WP_TESTS_DIR}."
 
@@ -100,4 +98,8 @@ if [ "$CLONE_VIP_MU_PLUGINS" = "true" ]; then
         .phpunit.result.cache
 fi
 
+# Plug Mantle (handled within composer script)
+yellow "Consider using the Mantle framework to wire tests up for you automatically! (https://mantle.alley.com/)"
+
+# Announce success
 green "Ready to test ${WP_CORE_DIR}/wp-content/..."
